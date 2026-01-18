@@ -4,6 +4,7 @@
 ## 1. Конфигурация (Root)
 * `AGENTS.md` — Глобальные правила (Конституция). Читается всеми агентами.
 * `.gptignore` — Список исключений (аналог .gitignore для LLM).
+* `.github/workflows/ci.yml` — GitHub Actions CI/CD pipeline (lint, typecheck, tests jobs).
 * `.gitignore` — Git исключения (Python, secrets, cache, venv, node_modules, *.db).
 * `.gitattributes` — Git настройки (line endings LF, LFS для больших файлов).
 * `README.md` — Документация проекта (описание, установка, запуск).
@@ -35,8 +36,8 @@
 * `specs/tasks/task-002-virtual-env-setup/task.md` — Task-002 (COMPLETED): Virtual Environment Setup.
 * `specs/tasks/task-003-project-structure/task.md` — Task-003 (COMPLETED): Project Structure Setup.
 * `specs/tasks/task-004-config-management/task.md` — Task-004 (COMPLETED): Configuration Management.
-* `specs/tasks/task-005-logging-setup/task.md` — Task-005: Logging Setup.
-* `specs/tasks/task-006-github-actions-cicd/task.md` — Task-006: GitHub Actions CI/CD.
+* `specs/tasks/task-005-logging-setup/task.md` — Task-005 (COMPLETED): Logging Setup.
+* `specs/tasks/task-006-github-actions-cicd/task.md` — Task-006 (COMPLETED): GitHub Actions CI/CD.
 
 ## 3. Инструментарий агента (.opencode/)
 * `.opencode/agents/breaker.md` — Промпт для роли Планировщика.
@@ -46,8 +47,9 @@
 
 ## 4. Исходный код (src/)
 **Core (src/core/)**
-* `src/core/__init__.py` — Core package (экспортирует get_settings, Settings).
+* `src/core/__init__.py` — Core package (экспортирует get_settings, Settings, setup_logging, get_logger).
 * `src/core/config.py` — Pydantic Settings v2 configuration management с field_validator для SECRET_KEY.
+* `src/core/logging.py` — Structured logging with PIIFormatter (JSON with PII masking), TextFormatter (colored console), setup_logging(), get_logger().
 
 **Database (src/db/)**
 * `src/db/__init__.py` — Database package.
@@ -85,6 +87,8 @@
 
 ## 5. Тесты (tests/)
 * `tests/__init__.py` — Tests package.
+* `tests/unit/test_logging.py` — Unit tests for logging module (PII masking, formatters, dev/prod mode).
+* `tests/unit/test_config.py` — Unit tests for Pydantic Settings configuration.
 * `tests/unit/__init__.py` — Unit tests (business logic, models, schemas).
 * `tests/integration/__init__.py` — Integration tests (API handlers, DB).
 * `tests/e2e/__init__.py` — End-to-end tests (full user journeys).

@@ -1,5 +1,78 @@
 # Lessons Learned (what went wrong/right)
 
+## 2026-01-18 (Task-006: GitHub Actions CI/CD)
+**What went well:**
+- GitHub Actions CI/CD workflow created successfully (.github/workflows/ci.yml)
+- 3 jobs configured (lint, typecheck, test) with pip caching
+- All checks pass locally after fixes: lint (All checks passed!), typecheck (Success: no issues found), tests (27 passed, 97% coverage)
+- Python version synchronized: pyproject.toml (3.12) = CI workflow (3.12) = local venv (3.12.10)
+- Reviewer APPROVED after all critical fixes
+
+**What went wrong:**
+- Python version mismatch: CI workflow used Python 3.11 but pyproject.toml configured for 3.12
+- Initial implementation didn't verify Python version consistency across CI, pyproject.toml, and venv
+- 26 lint errors existed in code from previous tasks (unsorted imports, unused imports)
+- pyproject.toml had deprecated ruff configuration (top-level instead of [tool.ruff.lint])
+- test_prod_mode_uses_pii_formatter failed due to missing re-import after module reload
+- pydantic/pydantic-core incompatibility after venv recreation
+
+**What was fixed:**
+- Updated .github/workflows/ci.yml: python-version 3.11 -> 3.12 (3 places: lines 18, 48, 78)
+- Fixed 26 lint errors with `ruff check . --fix` (sorted imports, removed unused imports)
+- Updated pyproject.toml: added [tool.ruff.lint] section (fixed deprecation warning)
+- Fixed test_prod_mode_uses_pii_formatter: re-import PIIFormatter after module reload
+- Recreated venv with Python 3.12.10
+- Force reinstalled pydantic/pydantic-core for Python 3.12 compatibility
+
+**What could be improved:**
+- Builder should verify Python version consistency across CI, pyproject.toml, and local venv before commit
+- Lint should be run automatically as part of pre-commit hooks to catch errors earlier
+- Task-006 allowlist was too narrow (excluded files with lint errors that needed fixing)
+- Consider adding automated lint/typecheck checks before pushing (pre-commit)
+
+**Lessons:**
+- Python version consistency is critical: CI workflow = pyproject.toml = local venv
+- datetime.UTC requires Python 3.11+, ensure Python version matches code requirements
+- ruff check . --fix can fix most lint issues automatically, but run it before committing
+- pyproject.toml ruff configuration should use [tool.ruff.lint] section (new format in ruff 0.14+)
+- When reloading Python modules in tests, re-import symbols that were deleted from sys.modules
+- pydantic/pydantic-core must be reinstalled when switching Python versions
+- CI pipeline verification: test locally with act or run all checks manually before pushing
+- Lint errors accumulate quickly; run lint regularly to keep codebase clean
+
+---
+
+## 2026-01-18 (Task-005: Logging Setup)
+**What went well:**
+- PIIFormatter successfully masks emails, tokens, and phone numbers
+- TextFormatter with ANSI colors works correctly for dev mode
+- Unicode support (Russian language) implemented via ensure_ascii=False in json.dumps()
+- 17 unit tests created, 100% pass rate
+- Coverage 94% (above required 80%)
+- Type hints validated with mypy (no issues)
+- Reviewer APPROVED without changes
+
+**What went right:**
+- Fixed datetime.utcnow() deprecation warning by using datetime.now(UTC)
+- Correctly typed formatter union: `formatter: logging.Formatter`
+- All PII patterns tested (emails, tokens, phones, multiple PII in one message)
+- False positive prevention: short alphanumeric strings (<20 chars) NOT masked as tokens
+
+**What could be improved:**
+- Optional log rotation handler not implemented (noted as optional in task, could be added later)
+- ANSI colors on legacy Windows terminals might require colorama (edge case)
+
+**Lessons:**
+- datetime.utcnow() is deprecated in Python 3.12+, use datetime.now(UTC) instead
+- For Formatter type hints: use `formatter: logging.Formatter` as base type for Union
+- ensure_ascii=False in json.dumps() for proper Unicode support (Russian, etc.)
+- Regex patterns for PII: test thoroughly for both positives and false positives
+- Coverage 94% for logging module is excellent (3 missing lines: edge cases)
+- Dev/prod mode switching works correctly via DEBUG environment variable
+- Context injection (extra context) is captured automatically by extracting non-standard LogRecord fields
+
+---
+
 ## 2026-01-18 (Task-001: Git & GitHub Setup)
 **What went well:**
 - TDD approach applied successfully (RED → GREEN → REFINEMENT)
