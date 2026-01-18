@@ -281,7 +281,7 @@ def test_prod_mode_uses_pii_formatter():
     if "src.core.logging" in sys.modules:
         del sys.modules["src.core.logging"]
 
-    from src.core.logging import setup_logging, PIIFormatter
+    from src.core.logging import PIIFormatter, setup_logging
 
     logger = setup_logging()
 
