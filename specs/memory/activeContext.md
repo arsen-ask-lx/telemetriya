@@ -4,18 +4,18 @@
 > Держать коротким: 1 экран. Никаких обсуждений — только факты.
 
 ## Status
-done (task-001, task-002, task-003, task-004, task-005, task-006 completed)
+ready (task-001-006 completed, Phase 0 done)
 
 ## Current Phase
-- Phase: 0 - Infrastructure & Foundation (Дни 1-3)
+- Phase: 0 - Infrastructure & Foundation (Дни 1-3) - COMPLETED
 - Tasks: 6 tasks created (001-006)
 - Completed: task-001 (Git & GitHub), task-002 (Virtual Environment), task-003 (Project Structure), task-004 (Config Management), task-005 (Logging Setup), task-006 (GitHub Actions CI/CD)
-- Estimated time: Phase 0 complete (all 6 tasks done)
+- Next: Phase 1 - Database Layer (Дни 4-7)
 
 ## Current Task
-- Path: None (Phase 0 complete)
-- Goal: Phase 0 foundation ready for Phase 1 (Database Layer)
-- Status: DONE (all 6 infrastructure tasks completed)
+- Path: specs/tasks/task-007-docker-postgresql-pgvector/task.md
+- Goal: Setup Docker + PostgreSQL 16 with pgvector extension
+- Status: pending (task created, ready for builder)
 
 ## Scope (what we do now)
 - Phase 0: Infrastructure & Foundation (COMPLETED):
@@ -32,9 +32,9 @@ done (task-001, task-002, task-003, task-004, task-005, task-006 completed)
 - Deployment (Phase 9)
 
 ## Next Steps (max 3)
-1) Review Phase 0 completion criteria (manual check by owner)
-2) Start Phase 1: Database Layer (Docker + PostgreSQL + pgvector)
-3) Create task-007-docker-postgresql-pgvector (task_breaker to execute)
+1) Switch to main branch and merge changes (manual: git checkout main && git merge feature/test-ci && git push)
+2) Run task-007 (Docker + PostgreSQL + pgvector) via builder
+3) Continue Phase 1 tasks sequentially (008-011)
 
 ## Blockers
 None
@@ -44,6 +44,8 @@ None
 - Methodology: TDD (Red → Green → Refactor), Progressive Complexity
 - GitHub: https://github.com/arsen-ask-lx/telemetriya.git
 - Configuration: Pydantic Settings v2 with field_validator for SECRET_KEY
+- Git strategy: Single branch (main) only - no feature/develop branches
+- CI/CD: GitHub Actions runs only on main branch push
 
 ## Done Criteria for Phase 0
 - [x] Git репозиторий инициализирован и подключен к GitHub

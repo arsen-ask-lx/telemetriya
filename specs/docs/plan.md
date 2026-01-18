@@ -187,8 +187,8 @@ Foundation → Database → Basic Bot → API → Search → AI → Integrations
     - Coverage (pytest-cov)
     - Upload coverage to Codecov
   - `deploy.yml` — deployment (будет позже)
-- Настройка трёхгитных правил (branch protection)
-- Настройка required checks для merge
+- Настройка CI для работы только с веткой main
+- Настройка required checks для push в main
 - Настройка automatic tagging
 
 **Deliverable:** Автоматизированная проверка качества кода
@@ -1487,6 +1487,21 @@ Foundation → Database → Basic Bot → API → Search → AI → Integrations
 
 ---
 
-**Дата создания:** 2026-01-18
-**Статус:** Draft (на утверждении владельцем)
-**Версия:** 1.0
+---
+
+**Дата создания:** 2026-01-18  
+**Версия:** 1.0  
+
+## Approval / Статус документа (Plan-first gate)
+
+**Статус:**  
+- **Approved (Phase 0 only)** — разрешено выполнять задачи фазы 0 (Foundation) по этому плану  
+- **Draft (Phase 1+)** — фазы 1+ считаются черновиком и требуют отдельного owner-approval перед началом
+
+**Approved scope:** Phase 0 — Infrastructure & Foundation (tasks 001–006)  
+**Approved by:** owner  
+**Approved on:** 2026-01-18  
+
+**Правило изменения:** любые правки, влияющие на scope/последовательность фаз, требуют обновления этого блока (новая дата/объём аппрува).
+
+---
