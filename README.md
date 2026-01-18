@@ -104,3 +104,4 @@ python -m src.bot.main
 ## Статус
 
 🚧 Проект в активной разработке — Фаза 0: Infrastructure & Foundation
+"# Test CI" 
