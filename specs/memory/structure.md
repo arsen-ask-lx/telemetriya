@@ -33,7 +33,7 @@
 **Tasks (Рабочее пространство)**
 * `specs/tasks/task-001-git-github-setup/task.md` — Task-001 (COMPLETED): Git & GitHub Setup.
 * `specs/tasks/task-002-virtual-env-setup/task.md` — Task-002 (COMPLETED): Virtual Environment Setup.
-* `specs/tasks/task-003-project-structure/task.md` — Task-003 (NEXT): Project Structure Setup.
+* `specs/tasks/task-003-project-structure/task.md` — Task-003 (COMPLETED): Project Structure Setup.
 * `specs/tasks/task-004-config-management/task.md` — Task-004: Configuration Management.
 * `specs/tasks/task-005-logging-setup/task.md` — Task-005: Logging Setup.
 * `specs/tasks/task-006-github-actions-cicd/task.md` — Task-006: GitHub Actions CI/CD.
@@ -43,3 +43,58 @@
 * `.opencode/agents/builder.md` — Промпт для роли Разработчика.
 * `.opencode/agents/reviewer.md` — Промпт для роли Ревьюера.
 * `.opencode/agents/archivist.md` — Промпт для роли Документатора.
+
+## 4. Исходный код (src/)
+**Core (src/core/)**
+* `src/core/__init__.py` — Core package (пока пустой).
+
+**Database (src/db/)**
+* `src/db/__init__.py` — Database package.
+* `src/db/models/__init__.py` — SQLAlchemy models (User, Note, Reminder, etc.).
+* `src/db/repositories/__init__.py` — Repository layer (CRUD operations).
+
+**Bot (src/bot/)**
+* `src/bot/__init__.py` — Telegram bot package.
+* `src/bot/handlers/__init__.py` — Command/message handlers (/start, /help, text, voice, etc.).
+* `src/bot/middlewares/__init__.py` — Bot middleware (logging, error handling, user context).
+* `src/bot/keyboards/__init__.py` — Inline/Reply keyboards.
+
+**API (src/api/)**
+* `src/api/__init__.py` — FastAPI application.
+* `src/api/v1/__init__.py` — API v1 endpoints.
+* `src/api/v1/schemas/__init__.py` — Pydantic schemas (request/response DTOs).
+* `src/api/v1/endpoints/__init__.py` — API endpoints (/v1/users, /v1/notes, etc.).
+* `src/api/v1/middleware/__init__.py` — API middleware (auth, rate limiting, logging).
+
+**LLM (src/llm/)**
+* `src/llm/__init__.py` — LLM integration package.
+* `src/llm/clients/__init__.py` — LLM clients (Ollama, GLM-4.7, OpenAI/Gemini).
+* `src/llm/schemas/__init__.py` — Pydantic schemas for LLM outputs (intent, classification, tagging).
+* `src/llm/prompts/__init__.py` — Prompt templates.
+
+**Storage (src/storage/)**
+* `src/storage/__init__.py` — File storage package.
+
+**Integrations (src/integrations/)**
+* `src/integrations/__init__.py` — External integrations package.
+* `src/integrations/todoist/__init__.py` — Todoist integration (MCP client, sync).
+
+**Utils (src/utils/)**
+* `src/utils/__init__.py` — Utility functions (datetime, validation, etc.).
+
+## 5. Тесты (tests/)
+* `tests/__init__.py` — Tests package.
+* `tests/unit/__init__.py` — Unit tests (business logic, models, schemas).
+* `tests/integration/__init__.py` — Integration tests (API handlers, DB).
+* `tests/e2e/__init__.py` — End-to-end tests (full user journeys).
+
+## 6. Инфраструктура и вспомогательные директории
+* `docs/.gitkeep` — Documentation directory.
+* `scripts/.gitkeep` — Helper scripts (dev.sh, test.sh, migrate.sh).
+* `storage/pdf/.gitkeep` — PDF files storage.
+* `storage/voice/.gitkeep` — Voice messages storage.
+* `storage/temp/.gitkeep` — Temporary files storage.
+* `infra/docker/.gitkeep` — Docker configurations (docker-compose.yml, Dockerfile).
+* `infra/postgres/.gitkeep` — PostgreSQL scripts (init.sql, migrations).
+* `infra/monitoring/.gitkeep` — Monitoring configs (Prometheus, Grafana).
+* `infra/secrets/.gitkeep` — Secrets management (templates, no actual secrets).
