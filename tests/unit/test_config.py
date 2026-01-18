@@ -1,6 +1,7 @@
 """Unit tests for configuration management."""
 
 import os
+from pathlib import Path
 from unittest.mock import patch
 from typing import Generator
 
@@ -12,7 +13,7 @@ os.environ.update(
     {
         "TELEGRAM_TOKEN": "test_token_123",
         "DATABASE_URL": "postgresql+asyncpg://test:test@localhost:5432/test_db",
-        "SECRET_KEY": "test_secret_key_for_testing_purposes_only",
+        "SECRET_KEY": "test_secret_key_for_testing_purposes_only_min_16",
     }
 )
 
@@ -23,10 +24,28 @@ def clear_settings_cache() -> Generator[None, None, None]:
     # Import here to avoid caching issues
     from src.core.config import get_settings, Settings
 
-    # Clear the cache before and after each test
+    # Clear cache before and after each test
     get_settings.cache_clear()
     yield
     get_settings.cache_clear()
+
+
+@pytest.fixture(autouse=True)
+def isolate_from_env_file() -> Generator[None, None, None]:
+    """Isolate tests from local .env file by temporarily renaming it."""
+    env_file = Path(".env")
+    env_backup = Path(".env.backup")
+
+    # Rename .env to .env.backup if it exists
+    if env_file.exists():
+        env_file.rename(env_backup)
+
+    try:
+        yield
+    finally:
+        # Restore .env from .env.backup if backup exists
+        if env_backup.exists():
+            env_backup.rename(env_file)
 
 
 @pytest.fixture
@@ -35,7 +54,7 @@ def test_env_vars() -> dict:
     return {
         "TELEGRAM_TOKEN": "test_token_123",
         "DATABASE_URL": "postgresql+asyncpg://test:test@localhost:5432/test_db",
-        "SECRET_KEY": "test_secret_key_for_testing_purposes_only",
+        "SECRET_KEY": "test_secret_key_for_testing_purposes_only_min_16",
         "APP_NAME": "TestApp",
         "VERSION": "1.0.0",
         "DEBUG": "True",
@@ -60,7 +79,7 @@ def test_settings_initialization(test_env_vars: dict) -> None:
         assert settings.db_url == "postgresql+asyncpg://test:test@localhost:5432/test_db"
         assert settings.llm_provider == "test_provider"
         assert settings.storage_path == "/test/storage"
-        assert settings.secret_key == "test_secret_key_for_testing_purposes_only"
+        assert settings.secret_key == "test_secret_key_for_testing_purposes_only_min_16"
         assert settings.log_level == "DEBUG"
         assert settings.log_format == "text"
 
@@ -95,7 +114,7 @@ def test_settings_default_values() -> None:
         {
             "TELEGRAM_TOKEN": "test_token",
             "DATABASE_URL": "postgresql+asyncpg://test:test@localhost:5432/test_db",
-            "SECRET_KEY": "test_secret",
+            "SECRET_KEY": "test_secret_16_chars",
         },
         clear=True,
     ):
@@ -121,7 +140,7 @@ def test_settings_environment_variables() -> None:
         {
             "TELEGRAM_TOKEN": "env_token",
             "DATABASE_URL": "postgresql+asyncpg://env:env@localhost:5432/env_db",
-            "SECRET_KEY": "env_secret",
+            "SECRET_KEY": "env_secret_16_chars",
             "APP_NAME": "EnvApp",
             "VERSION": "2.0.0",
             "DEBUG": "True",
@@ -167,7 +186,7 @@ def test_settings_caching() -> None:
         {
             "TELEGRAM_TOKEN": "test_token",
             "DATABASE_URL": "postgresql+asyncpg://test:test@localhost:5432/test_db",
-            "SECRET_KEY": "test_secret",
+            "SECRET_KEY": "test_secret_16_chars",
         },
         clear=True,
     ):
@@ -187,7 +206,7 @@ def test_settings_optional_fields_none() -> None:
         {
             "TELEGRAM_TOKEN": "test_token",
             "DATABASE_URL": "postgresql+asyncpg://test:test@localhost:5432/test_db",
-            "SECRET_KEY": "test_secret",
+            "SECRET_KEY": "test_secret_16_chars",
         },
         clear=True,
     ):
@@ -210,7 +229,7 @@ def test_settings_model_config_extra_ignore() -> None:
         {
             "TELEGRAM_TOKEN": "test_token",
             "DATABASE_URL": "postgresql+asyncpg://test:test@localhost:5432/test_db",
-            "SECRET_KEY": "test_secret",
+            "SECRET_KEY": "test_secret_16_chars",
             "UNKNOWN_FIELD": "should_be_ignored",
             "ANOTHER_UNKNOWN": "also_ignored",
         },
@@ -240,7 +259,7 @@ def test_settings_bool_conversion() -> None:
             {
                 "TELEGRAM_TOKEN": "test_token",
                 "DATABASE_URL": "postgresql+asyncpg://test:test@localhost:5432/test_db",
-                "SECRET_KEY": "test_secret",
+                "SECRET_KEY": "test_secret_16_chars",
                 "DEBUG": value,
             },
             clear=True,
@@ -258,7 +277,7 @@ def test_settings_access_token_expire_minutes_int() -> None:
         {
             "TELEGRAM_TOKEN": "test_token",
             "DATABASE_URL": "postgresql+asyncpg://test:test@localhost:5432/test_db",
-            "SECRET_KEY": "test_secret",
+            "SECRET_KEY": "test_secret_16_chars",
             "ACCESS_TOKEN_EXPIRE_MINUTES": "90",
         },
         clear=True,
@@ -266,3 +285,39 @@ def test_settings_access_token_expire_minutes_int() -> None:
         settings = Settings()
         assert isinstance(settings.access_token_expire_minutes, int)
         assert settings.access_token_expire_minutes == 90
+
+
+def test_settings_secret_key_min_length() -> None:
+    """Test that SECRET_KEY validates minimum length (16 characters)."""
+    from src.core.config import Settings
+
+    short_keys = ["", "short", "123456789012345"]  # Less than 16 chars
+
+    for short_key in short_keys:
+        with patch.dict(
+            os.environ,
+            {
+                "TELEGRAM_TOKEN": "test_token",
+                "DATABASE_URL": "postgresql+asyncpg://test:test@localhost:5432/test_db",
+                "SECRET_KEY": short_key,
+            },
+            clear=True,
+        ):
+            with pytest.raises(ValidationError) as exc_info:
+                Settings()
+
+            errors = exc_info.value.errors()
+            assert any("SECRET_KEY" in str(error.get("loc", [])) for error in errors)
+
+    # Valid key should pass
+    with patch.dict(
+        os.environ,
+        {
+            "TELEGRAM_TOKEN": "test_token",
+            "DATABASE_URL": "postgresql+asyncpg://test:test@localhost:5432/test_db",
+            "SECRET_KEY": "1234567890123456",  # Exactly 16 chars
+        },
+        clear=True,
+    ):
+        settings = Settings()
+        assert settings.secret_key == "1234567890123456"

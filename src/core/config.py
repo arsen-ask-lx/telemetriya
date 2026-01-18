@@ -3,7 +3,7 @@
 from functools import lru_cache
 from typing import Optional
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -50,6 +50,14 @@ class Settings(BaseSettings):
     log_format: str = Field(default="json", validation_alias="LOG_FORMAT")
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+
+    @field_validator("secret_key")
+    @classmethod
+    def validate_secret_key(cls, v: str) -> str:
+        """Validate SECRET_KEY has minimum length of 16 characters."""
+        if len(v) < 16:
+            raise ValueError("SECRET_KEY must be at least 16 characters long")
+        return v
 
 
 @lru_cache
