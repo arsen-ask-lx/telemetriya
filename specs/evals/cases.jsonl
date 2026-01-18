@@ -1,0 +1,1 @@
+{"input":"Сделай саммари статьи, которую я скинул вчера","expected_intent":"summarize","expected_route":"summarize_last_or_by_date"}
