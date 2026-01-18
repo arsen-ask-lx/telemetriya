@@ -6,9 +6,8 @@ This script verifies that all Git/GitHub setup requirements are met.
 It follows the Definition of Done for task-001-git-github-setup.
 """
 
-import os
-import sys
 import subprocess
+import sys
 from pathlib import Path
 from typing import List, Tuple
 

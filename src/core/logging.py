@@ -4,7 +4,7 @@ import json
 import logging
 import re
 import sys
-from datetime import datetime, UTC
+from datetime import UTC, datetime
 from typing import Any, Dict
 
 from src.core.config import get_settings

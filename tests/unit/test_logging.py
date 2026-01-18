@@ -3,9 +3,6 @@
 import logging
 import os
 import sys
-from io import StringIO
-
-import pytest
 
 # Mock config before importing logging module
 os.environ["TELEGRAM_TOKEN"] = "test_token_12345678901234567890"
@@ -64,7 +61,6 @@ def test_log_level_debug():
 
 def test_json_formatter_creation():
     """Test that PIIFormatter (JSON) can be created."""
-    from src.core.logging import PIIFormatter
 
     formatter = PIIFormatter()
     assert formatter is not None
@@ -72,7 +68,6 @@ def test_json_formatter_creation():
 
 def test_json_formatter_output():
     """Test that PIIFormatter produces valid JSON."""
-    from src.core.logging import PIIFormatter
 
     formatter = PIIFormatter()
     record = logging.LogRecord(
@@ -101,7 +96,6 @@ def test_json_formatter_output():
 
 def test_text_formatter_creation():
     """Test that TextFormatter can be created."""
-    from src.core.logging import TextFormatter
 
     formatter = TextFormatter()
     assert formatter is not None
@@ -109,7 +103,6 @@ def test_text_formatter_creation():
 
 def test_text_formatter_output():
     """Test that TextFormatter produces colored text."""
-    from src.core.logging import TextFormatter
 
     formatter = TextFormatter()
     record = logging.LogRecord(
@@ -133,7 +126,6 @@ def test_text_formatter_output():
 
 def test_pii_masking_email():
     """Test that emails are masked."""
-    from src.core.logging import PIIFormatter
 
     formatter = PIIFormatter()
     record = logging.LogRecord(
@@ -157,7 +149,6 @@ def test_pii_masking_email():
 
 def test_pii_masking_token():
     """Test that long alphanumeric tokens are masked."""
-    from src.core.logging import PIIFormatter
 
     formatter = PIIFormatter()
     token = "abc123def456ghi789jkl012mno345pqr678"
@@ -182,7 +173,6 @@ def test_pii_masking_token():
 
 def test_pii_masking_phone():
     """Test that phone numbers are masked."""
-    from src.core.logging import PIIFormatter
 
     formatter = PIIFormatter()
     record = logging.LogRecord(
@@ -206,7 +196,6 @@ def test_pii_masking_phone():
 
 def test_pii_masking_multiple():
     """Test that multiple PII types are masked in one message."""
-    from src.core.logging import PIIFormatter
 
     formatter = PIIFormatter()
     record = logging.LogRecord(
@@ -234,7 +223,6 @@ def test_pii_masking_multiple():
 
 def test_pii_no_false_positive_short_token():
     """Test that short alphanumeric strings are NOT masked."""
-    from src.core.logging import PIIFormatter
 
     formatter = PIIFormatter()
     record = logging.LogRecord(
@@ -265,7 +253,7 @@ def test_dev_mode_uses_text_formatter():
     if "src.core.logging" in sys.modules:
         del sys.modules["src.core.logging"]
 
-    from src.core.logging import setup_logging, PIIFormatter
+    from src.core.logging import setup_logging
 
     logger = setup_logging()
 
@@ -293,13 +281,12 @@ def test_prod_mode_uses_pii_formatter():
     if "src.core.logging" in sys.modules:
         del sys.modules["src.core.logging"]
 
-    from src.core.logging import setup_logging
+    from src.core.logging import setup_logging, PIIFormatter
 
     logger = setup_logging()
 
     assert len(logger.handlers) > 0
     handler = logger.handlers[0]
-    from src.core.logging import PIIFormatter
 
     assert isinstance(handler.formatter, PIIFormatter)
 
@@ -312,7 +299,6 @@ def test_prod_mode_uses_pii_formatter():
 
 def test_context_injection():
     """Test that extra context is captured."""
-    from src.core.logging import PIIFormatter
 
     formatter = PIIFormatter()
     record = logging.LogRecord(
@@ -342,7 +328,6 @@ def test_context_injection():
 
 def test_unicode_support():
     """Test that Unicode (Russian) is supported."""
-    from src.core.logging import PIIFormatter
 
     formatter = PIIFormatter()
     record = logging.LogRecord(
@@ -368,7 +353,6 @@ def test_unicode_support():
 
 def test_error_handling_invalid_json():
     """Test that logging handles edge cases gracefully."""
-    from src.core.logging import PIIFormatter
 
     formatter = PIIFormatter()
 

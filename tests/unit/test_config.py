@@ -2,8 +2,8 @@
 
 import os
 from pathlib import Path
-from unittest.mock import patch
 from typing import Generator
+from unittest.mock import patch
 
 import pytest
 from pydantic import ValidationError
@@ -22,7 +22,7 @@ os.environ.update(
 def clear_settings_cache() -> Generator[None, None, None]:
     """Clear Settings cache between tests to ensure fresh imports."""
     # Import here to avoid caching issues
-    from src.core.config import get_settings, Settings
+    from src.core.config import get_settings
 
     # Clear cache before and after each test
     get_settings.cache_clear()
