@@ -4,7 +4,7 @@
 > Держать коротким: 1 экран. Никаких обсуждений — только факты.
 
 ## Status
-planning | building | review | done
+done (task-001 completed)
 
 ## Current Phase
 - Phase: 0 - Infrastructure & Foundation (Дни 1-3)
@@ -12,8 +12,8 @@ planning | building | review | done
 - Estimated time: 4-5 days
 
 ## Current Task
-- Path: `specs/tasks/task-001-git-github-setup/task.md`
-- Goal (1 sentence): Настроить Git репозиторий, подключить к GitHub и создать базовую документацию.
+- Path: `specs/tasks/task-002-virtual-env-setup/task.md`
+- Goal (1 sentence): Создать Python виртуальное окружение, установить зависимости и инструменты разработки.
 - Status: Ready to implement
 
 ## Scope (what we do now)
@@ -31,9 +31,9 @@ planning | building | review | done
 - Deployment (Phase 9)
 
 ## Next Steps (max 3)
-1) Execute task-001-git-github-setup
-2) Execute task-002-virtual-env-setup
-3) Execute task-003-project-structure
+1) Execute task-002-virtual-env-setup
+2) Execute task-003-project-structure
+3) Execute task-004-config-management
 
 ## Decisions (only if important)
 - Stack: Python 3.11+, FastAPI, PostgreSQL + pgvector, LLM (glm-4.7/ollama/gemini)
@@ -41,7 +41,7 @@ planning | building | review | done
 - GitHub: https://github.com/arsen-ask-lx/telemetriya.git
 
 ## Done Criteria for Phase 0
-- [ ] Git репозиторий инициализирован и подключен к GitHub
+- [x] Git репозиторий инициализирован и подключен к GitHub
 - [ ] Виртуальное окружение с зависимостями создано
 - [ ] Структура проекта создана
 - [ ] Конфигурация с Pydantic Settings работает
@@ -52,4 +52,9 @@ planning | building | review | done
 
 ## Last Updated
 - Date: 2026-01-18
-- By: task_breaker
+- By: archivist
+
+## What was done
+- Task-001-git-github-setup: Git repo initialized, GitHub connected, base docs created (README, LICENSE, CONTRIBUTING, CHANGELOG, .gitignore, .gitattributes)
+- All 10 verification checks passed (100% pass-rate)
+- Agent constraints updated (builder limited to one task per session)
