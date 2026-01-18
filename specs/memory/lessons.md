@@ -16,3 +16,24 @@
 - Add verification scripts to task allowlist explicitly
 - Update agent constraints to prevent task jumping
 - Git line ending issues on Windows: solved with .gitattributes (LF normalization)
+
+## 2026-01-18 (Task-002: Virtual Environment Setup)
+**What went well:**
+- Python 3.12.10 successfully found and used for venv
+- All dependencies installed correctly (production + dev)
+- Tool configs created properly (ruff, pytest, mypy, coverage in pyproject.toml)
+- Issue caught by reviewer and fixed promptly
+
+**What went wrong:**
+- Initial venv created with Python 3.10.11 instead of 3.11+ (DoD requirement)
+- Builder didn't check Python version before creating venv → first review returned CHANGES_REQUESTED
+- pyproject.toml initially configured for py311, had to update to py312 after venv recreation
+
+**What could be improved:**
+- Builder should verify Python version explicitly before creating venv (Step 1 of task plan)
+- Add Python version check to verification commands in task DoD
+
+**Lessons:**
+- Always verify Python version matches DoD requirements before creating venv
+- Sync pyproject.toml python_version with actual venv Python version
+- Document fixes properly in commit messages (e.g., "fix: recreate venv with Python 3.12.10 (DoD requires 3.11+)")

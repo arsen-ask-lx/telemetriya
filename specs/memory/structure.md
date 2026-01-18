@@ -10,6 +10,9 @@
 * `LICENSE` — MIT лицензия.
 * `CONTRIBUTING.md` — Правила контрибьюции (Conventional Commits, TDD, Code of Conduct).
 * `CHANGELOG.md` — Журнал изменений (Keep a Changelog format).
+* `requirements.txt` — Production зависимости (Python пакеты).
+* `requirements-dev.txt` — Development зависимости (тестирование, линтинг, типизация).
+* `pyproject.toml` — Конфигурация инструментов (ruff, pytest, mypy, coverage).
 
 ## 2. Спецификации и Память (specs/)
 **Docs (Общее)**
@@ -29,8 +32,8 @@
 
 **Tasks (Рабочее пространство)**
 * `specs/tasks/task-001-git-github-setup/task.md` — Task-001 (COMPLETED): Git & GitHub Setup.
-* `specs/tasks/task-002-virtual-env-setup/task.md` — Task-002 (NEXT): Virtual Environment Setup.
-* `specs/tasks/task-003-project-structure/task.md` — Task-003: Project Structure Setup.
+* `specs/tasks/task-002-virtual-env-setup/task.md` — Task-002 (COMPLETED): Virtual Environment Setup.
+* `specs/tasks/task-003-project-structure/task.md` — Task-003 (NEXT): Project Structure Setup.
 * `specs/tasks/task-004-config-management/task.md` — Task-004: Configuration Management.
 * `specs/tasks/task-005-logging-setup/task.md` — Task-005: Logging Setup.
 * `specs/tasks/task-006-github-actions-cicd/task.md` — Task-006: GitHub Actions CI/CD.

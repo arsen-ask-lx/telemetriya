@@ -4,17 +4,18 @@
 > Держать коротким: 1 экран. Никаких обсуждений — только факты.
 
 ## Status
-done (task-001 completed)
+done (task-001 completed, task-002 completed)
 
 ## Current Phase
 - Phase: 0 - Infrastructure & Foundation (Дни 1-3)
 - Tasks: 6 tasks created (001-006)
+- Completed: task-001 (Git & GitHub), task-002 (Virtual Environment)
 - Estimated time: 4-5 days
 
 ## Current Task
 - Path: `specs/tasks/task-002-virtual-env-setup/task.md`
 - Goal (1 sentence): Создать Python виртуальное окружение, установить зависимости и инструменты разработки.
-- Status: Ready to implement
+- Status: DONE (reviewer APPROVED)
 
 ## Scope (what we do now)
 - Phase 0: Infrastructure & Foundation:
@@ -31,9 +32,12 @@ done (task-001 completed)
 - Deployment (Phase 9)
 
 ## Next Steps (max 3)
-1) Execute task-002-virtual-env-setup
-2) Execute task-003-project-structure
-3) Execute task-004-config-management
+1) Execute task-003-project-structure (owner to start)
+2) Execute task-004-config-management
+3) Execute task-005-logging-setup
+
+## Blockers
+None
 
 ## Decisions (only if important)
 - Stack: Python 3.11+, FastAPI, PostgreSQL + pgvector, LLM (glm-4.7/ollama/gemini)
@@ -42,7 +46,7 @@ done (task-001 completed)
 
 ## Done Criteria for Phase 0
 - [x] Git репозиторий инициализирован и подключен к GitHub
-- [ ] Виртуальное окружение с зависимостями создано
+- [x] Виртуальное окружение с зависимостями создано
 - [ ] Структура проекта создана
 - [ ] Конфигурация с Pydantic Settings работает
 - [ ] Логирование с PII masking работает
@@ -56,5 +60,7 @@ done (task-001 completed)
 
 ## What was done
 - Task-001-git-github-setup: Git repo initialized, GitHub connected, base docs created (README, LICENSE, CONTRIBUTING, CHANGELOG, .gitignore, .gitattributes)
-- All 10 verification checks passed (100% pass-rate)
-- Agent constraints updated (builder limited to one task per session)
+- Task-002-virtual-env-setup: Python 3.12.10 venv created, all dependencies installed (production + dev), tool configs created (pyproject.toml with ruff, pytest, mypy, coverage)
+- All verification checks passed for task-001 and task-002
+- Python version issue fixed: initial venv was 3.10.11, recreated with 3.12.10 to meet DoD (3.11+)
+- pyproject.toml updated from py311 to py312
