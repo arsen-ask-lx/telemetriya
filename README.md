@@ -36,35 +36,176 @@ Telemetriya — это "второй цифровой мозг", который 
 
 ## Установка
 
-> TODO: Инструкция будет добавлена после завершения фазы 0 (Infrastructure & Foundation)
-
 ### Требования
 
 - Python 3.11+
-- PostgreSQL 15+ с pgvector extension
-- Docker (опционально для деплоя)
+- Docker и Docker Compose
+- Telegram Bot Token (получить через @BotFather)
 
 ### Быстрый старт
 
+#### 1. Клонирование репозитория
+
 ```bash
-# Клонируйте репозиторий
 git clone https://github.com/arsen-ask-lx/telemetriya.git
 cd telemetriya
+```
 
-# Создайте виртуальное окружение
+#### 2. Запуск PostgreSQL с Docker
+
+**Linux/Mac:**
+```bash
+# Запуск контейнеров
+./scripts/docker-up.sh
+
+# Проверка статуса
+docker-compose -f infra/docker/docker-compose.yml ps
+
+# Просмотр логов
+./scripts/docker-logs.sh
+
+# Подключение к PostgreSQL
+./scripts/docker-exec.sh
+
+# Остановка контейнеров (сохраняя данные)
+./scripts/docker-down.sh
+
+# Остановка с удалением данных
+docker-compose -f infra/docker/docker-compose.yml down -v
+```
+
+**Windows:**
+```cmd
+REM Запуск контейнеров
+scripts\docker-up.bat
+
+REM Проверка статуса
+docker-compose -f infra/docker/docker-compose.yml ps
+
+REM Просмотр логов
+scripts\docker-logs.bat
+
+REM Подключение к PostgreSQL
+scripts\docker-exec.bat
+
+REM Остановка контейнеров (сохраняя данные)
+scripts\docker-down.bat
+
+REM Остановка с удалением данных
+docker-compose -f infra/docker/docker-compose.yml down -v
+```
+
+#### 3. Настройка виртуального окружения
+
+```bash
+# Создание виртуального окружения
 python -m venv .venv
-source .venv/bin/activate  # Linux/Mac
-# .venv\Scripts\activate  # Windows
 
-# Установите зависимости (TODO: будет добавлено позже)
+# Активация (Linux/Mac)
+source .venv/bin/activate
+
+# Активация (Windows)
+.venv\Scripts\activate
+
+# Установка зависимостей
 pip install -r requirements.txt
+pip install -r requirements-dev.txt
+```
 
-# Настройте переменные окружения
+#### 4. Настройка переменных окружения
+
+```bash
+# Копирование шаблона
 cp .env.example .env
-# Отредактируйте .env с вашими ключами
 
-# Запустите бота (TODO: будет добавлено позже)
+# Редактирование .env (добавьте ваши ключи)
+```
+
+Обязательные переменные в `.env`:
+```bash
+# PostgreSQL
+POSTGRES_USER=telemetriya
+POSTGRES_PASSWORD=your_secure_password
+POSTGRES_DB=telemetriya
+POSTGRES_PORT=5432
+
+# Telegram (получить через @BotFather)
+TELEGRAM_BOT_TOKEN=your_bot_token
+
+# LLM (выберите провайдер)
+# GLM-4.7 (z.ai)
+LLM_PROVIDER=glm
+GLM_API_KEY=your_api_key
+
+# или Ollama (локальный)
+LLM_PROVIDER=ollama
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama2
+
+# или OpenAI/Gemini
+LLM_PROVIDER=openai
+OPENAI_API_KEY=your_api_key
+```
+
+#### 5. Запуск приложения
+
+```bash
+# Запуск бота (TODO: будет добавлено после Phase 2)
 python -m src.bot.main
+```
+
+## Docker управление
+
+### Команды управления
+
+| Команда | Описание |
+|---------|----------|
+| `scripts/docker-up.sh` / `docker-up.bat` | Запуск контейнеров |
+| `scripts/docker-down.sh` / `docker-down.bat` | Остановка контейнеров |
+| `scripts/docker-logs.sh` / `docker-logs.bat` | Просмотр логов |
+| `scripts/docker-exec.sh` / `docker-exec.bat` | Подключение к PostgreSQL |
+
+### Проверка подключения
+
+После запуска контейнеров вы можете подключиться к PostgreSQL:
+
+```sql
+-- Внутри psql консоли
+\dx                    -- Просмотр установленных extensions
+\dt                    -- Просмотр таблиц
+\l                     -- Просмотр баз данных
+\q                     -- Выход
+```
+
+### Persistent Volumes
+
+Данные сохраняются в Docker volumes. Чтобы удалить данные полностью:
+
+```bash
+docker-compose -f infra/docker/docker-compose.yml down -v
+```
+
+### Troubleshooting
+
+**Порт 5432 уже занят:**
+```bash
+# Измените порт в .env
+POSTGRES_PORT=5433
+```
+
+**Проблемы с правами доступа (Linux):**
+```bash
+sudo chown -R $USER:$USER /var/lib/docker
+```
+
+**Health check не проходит:**
+```bash
+# Проверьте логи
+docker-compose -f infra/docker/docker-compose.yml logs postgres
+
+# Перезапустите контейнеры
+./scripts/docker-down.sh
+./scripts/docker-up.sh
 ```
 
 ## Документация
@@ -103,5 +244,27 @@ python -m src.bot.main
 
 ## Статус
 
-🚧 Проект в активной разработке — Фаза 0: Infrastructure & Foundation
-"# Test CI" 
+🚧 Проект в активной разработке — Фаза 1: Database Layer
+
+**Выполнено:**
+- ✅ Фаза 0: Infrastructure & Foundation (tasks 001-006)
+- ✅ Git & GitHub Setup
+- ✅ Virtual Environment Setup
+- ✅ Project Structure Setup
+- ✅ Configuration Management (Pydantic Settings)
+- ✅ Logging Setup (PII masking)
+- ✅ GitHub Actions CI/CD
+
+**В процессе:**
+- ⏳ Фаза 1: Database Layer (tasks 007-011)
+- 🔄 Docker + PostgreSQL + pgvector (task-007)
+
+**Планируется:**
+- 📋 Фаза 2: Basic Telegram Bot
+- 📋 Фаза 3: FastAPI Backend & API
+- 📋 Фаза 4: Search & Vector Embeddings
+- 📋 Фаза 5: AI Features - Part 1
+- 📋 Фаза 6: AI Features - Part 2
+- 📋 Фаза 7: Reminders & Tasks
+- 📋 Фаза 8: Todoist Integration
+- 📋 Фаза 9: Production Deployment
