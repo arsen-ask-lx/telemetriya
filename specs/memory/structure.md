@@ -34,7 +34,7 @@
 * `specs/tasks/task-001-git-github-setup/task.md` — Task-001 (COMPLETED): Git & GitHub Setup.
 * `specs/tasks/task-002-virtual-env-setup/task.md` — Task-002 (COMPLETED): Virtual Environment Setup.
 * `specs/tasks/task-003-project-structure/task.md` — Task-003 (COMPLETED): Project Structure Setup.
-* `specs/tasks/task-004-config-management/task.md` — Task-004: Configuration Management.
+* `specs/tasks/task-004-config-management/task.md` — Task-004 (COMPLETED): Configuration Management.
 * `specs/tasks/task-005-logging-setup/task.md` — Task-005: Logging Setup.
 * `specs/tasks/task-006-github-actions-cicd/task.md` — Task-006: GitHub Actions CI/CD.
 
@@ -46,7 +46,8 @@
 
 ## 4. Исходный код (src/)
 **Core (src/core/)**
-* `src/core/__init__.py` — Core package (пока пустой).
+* `src/core/__init__.py` — Core package (экспортирует get_settings, Settings).
+* `src/core/config.py` — Pydantic Settings v2 configuration management с field_validator для SECRET_KEY.
 
 **Database (src/db/)**
 * `src/db/__init__.py` — Database package.
