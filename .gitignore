@@ -143,17 +143,25 @@ cython_debug/
 *.sqlite3
 
 # Secrets
-secrets/
 *.key
 *.pem
 *.crt
+infra/secrets/*
+!infra/secrets/.gitkeep
 
 # Logs
 logs/
 *.log
 
 # Storage (files uploaded by users)
-storage/
+storage/*
+!storage/.gitkeep
+!storage/pdf/
+!storage/voice/
+!storage/temp/
+!storage/pdf/.gitkeep
+!storage/voice/.gitkeep
+!storage/temp/.gitkeep
 uploads/
 files/
 
@@ -166,5 +174,6 @@ Thumbs.db
 
 # Temporary files
 tmp/
-temp/
+!storage/temp/
+/temp
 *.tmp
