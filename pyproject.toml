@@ -1,6 +1,6 @@
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py312"
 select = ["E", "F", "I", "N", "W"]
 ignore = ["E501"]
 
@@ -12,7 +12,7 @@ python_functions = ["test_*"]
 asyncio_mode = "auto"
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
