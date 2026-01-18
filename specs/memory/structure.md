@@ -95,11 +95,14 @@
 
 ## 6. Инфраструктура и вспомогательные директории
 * `docs/.gitkeep` — Documentation directory.
-* `scripts/.gitkeep` — Helper scripts (dev.sh, test.sh, migrate.sh).
+* `scripts/.gitkeep` — Helper scripts (docker-up.sh/down.sh/logs.sh/exec.sh, docker-up.bat/down.bat/logs.bat/exec.bat).
 * `storage/pdf/.gitkeep` — PDF files storage.
 * `storage/voice/.gitkeep` — Voice messages storage.
 * `storage/temp/.gitkeep` — Temporary files storage.
-* `infra/docker/.gitkeep` — Docker configurations (docker-compose.yml, Dockerfile).
-* `infra/postgres/.gitkeep` — PostgreSQL scripts (init.sql, migrations).
+* `infra/docker/docker-compose.yml` — Docker Compose configuration (PostgreSQL 16 + pgvector).
+* `infra/postgres/init.sql` — PostgreSQL initialization script (pgvector + uuid-ossp extensions).
 * `infra/monitoring/.gitkeep` — Monitoring configs (Prometheus, Grafana).
 * `infra/secrets/.gitkeep` — Secrets management (templates, no actual secrets).
+* `tests/docker/__init__.py` — Docker configuration tests package.
+* `tests/docker/test_docker_compose.py` — Tests for docker-compose.yml validation.
+* `tests/docker/test_scripts.py` — Tests for Docker management scripts.
