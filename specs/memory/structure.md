@@ -7,13 +7,14 @@
 * `.github/workflows/ci.yml` — GitHub Actions CI/CD pipeline (lint, typecheck, tests jobs).
 * `.gitignore` — Git исключения (Python, secrets, cache, venv, node_modules, *.db).
 * `.gitattributes` — Git настройки (line endings LF, LFS для больших файлов).
-* `README.md` — Документация проекта (описание, установка, запуск).
+* `README.md` — Документация проекта (описание, установка, запуск, миграции).
 * `LICENSE` — MIT лицензия.
 * `CONTRIBUTING.md` — Правила контрибьюции (Conventional Commits, TDD, Code of Conduct).
 * `CHANGELOG.md` — Журнал изменений (Keep a Changelog format).
-* `requirements.txt` — Production зависимости (Python пакеты).
+* `requirements.txt` — Production зависимости (Python пакеты: alembic, asyncpg, psycopg2, sqlalchemy, etc.).
 * `requirements-dev.txt` — Development зависимости (тестирование, линтинг, типизация).
 * `pyproject.toml` — Конфигурация инструментов (ruff, pytest, mypy, coverage).
+* `alembic.ini` — Alembic конфигурация (DATABASE_URL, script location, version path).
 
 ## 2. Спецификации и Память (specs/)
 **Docs (Общее)**
@@ -52,6 +53,12 @@
 * `src/core/__init__.py` — Core package (экспортирует get_settings, Settings, setup_logging, get_logger).
 * `src/core/config.py` — Pydantic Settings v2 configuration management с field_validator для SECRET_KEY.
 * `src/core/logging.py` — Structured logging with PIIFormatter (JSON with PII masking), TextFormatter (colored console), setup_logging(), get_logger().
+
+**Alembic (alembic/)**
+* `alembic/env.py` — Alembic environment config (AsyncEngine support, model imports).
+* `alembic/script.py.mako` — Migration template (шаблон для создания новых миграций).
+* `alembic/versions/` — Миграции базы данных:
+  - `alembic/versions/dc9f11620792_initial_schema.py` — Первая миграция (pgvector, uuid-ossp, CREATE TABLE User/Note/Reminder/TodoistTask/Session).
 
 **Database (src/db/)**
 * `src/db/__init__.py` — Database package.
@@ -109,10 +116,17 @@
   - `tests/db/models/test_reminder.py` — Reminder model tests.
   - `tests/db/models/test_todoist_task.py` — TodoistTask model tests (SyncStatus enum).
   - `tests/db/models/test_session.py` — Session model tests.
+* `tests/db/migrations/` — Alembic migrations unit tests:
+  - `tests/db/migrations/test_alembic_config.py` — Tests for alembic configuration.
+  - `tests/db/migrations/test_migration_runner.py` — Tests for upgrade/downgrade operations.
+  - `tests/db/migrations/test_scripts.py` — Tests for migration scripts (migrate.sh, rollback.sh, revision.sh).
 
 ## 6. Инфраструктура и вспомогательные директории
 * `docs/.gitkeep` — Documentation directory.
 * `scripts/.gitkeep` — Helper scripts (docker-up.sh/down.sh/logs.sh/exec.sh, docker-up.bat/down.bat/logs.bat/exec.bat).
+* `scripts/migrate.sh` — Migration upgrade script (alembic upgrade head).
+* `scripts/rollback.sh` — Migration downgrade script (alembic downgrade -1).
+* `scripts/revision.sh` — Create new migration script (alembic revision --autogenerate -m "$1").
 * `storage/pdf/.gitkeep` — PDF files storage.
 * `storage/voice/.gitkeep` — Voice messages storage.
 * `storage/temp/.gitkeep` — Temporary files storage.
