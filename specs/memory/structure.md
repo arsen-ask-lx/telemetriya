@@ -53,6 +53,7 @@
 * `src/core/__init__.py` — Core package (экспортирует get_settings, Settings, setup_logging, get_logger).
 * `src/core/config.py` — Pydantic Settings v2 configuration management с field_validator для SECRET_KEY.
 * `src/core/logging.py` — Structured logging with PIIFormatter (JSON with PII masking), TextFormatter (colored console), setup_logging(), get_logger().
+* `src/core/health.py` — Health check functions (check_db_health) for database connectivity verification.
 
 **Alembic (alembic/)**
 * `alembic/env.py` — Alembic environment config (AsyncEngine support, model imports).
@@ -64,6 +65,7 @@
 * `src/db/__init__.py` — Database package.
 * `src/db/base.py` — Base declarative class (DeclarativeBase).
 * `src/db/mixins.py` — Mixin classes (TimestampMixin, UUIDMixin, SoftDeleteMixin).
+* `src/db/session.py` — Async connection pooling (AsyncEngine), SessionFactory, init_db(), close_db(), get_db() dependency.
 * `src/db/models/__init__.py` — SQLAlchemy models (User, Note, Reminder, etc.).
 * `src/db/models/user.py` — User model (telegram users).
 * `src/db/models/note.py` — Note model (user notes with ContentType, NoteSource enums).
@@ -79,7 +81,9 @@
 * `src/bot/keyboards/__init__.py` — Inline/Reply keyboards.
 
 **API (src/api/)**
-* `src/api/__init__.py` — FastAPI application.
+* `src/api/__init__.py` — FastAPI application package.
+* `src/api/main.py` — FastAPI app factory with lifespan events (init_db/close_db).
+* `src/api/dependencies.py` — FastAPI dependencies (get_db_session, lifespan).
 * `src/api/v1/__init__.py` — API v1 endpoints.
 * `src/api/v1/schemas/__init__.py` — Pydantic schemas (request/response DTOs).
 * `src/api/v1/endpoints/__init__.py` — API endpoints (/v1/users, /v1/notes, etc.).
@@ -107,6 +111,7 @@
 * `tests/unit/test_config.py` — Unit tests for Pydantic Settings configuration.
 * `tests/unit/__init__.py` — Unit tests (business logic, models, schemas).
 * `tests/integration/__init__.py` — Integration tests (API handlers, DB).
+* `tests/integration/test_db_connection.py` — Integration tests for database connection (session lifecycle, connection reuse).
 * `tests/e2e/__init__.py` — End-to-end tests (full user journeys).
 * `tests/db/models/` — Database models unit tests:
   - `tests/db/models/test_base.py` — Base declarative class tests.
@@ -116,10 +121,18 @@
   - `tests/db/models/test_reminder.py` — Reminder model tests.
   - `tests/db/models/test_todoist_task.py` — TodoistTask model tests (SyncStatus enum).
   - `tests/db/models/test_session.py` — Session model tests.
+* `tests/db/session/` — Database connection management unit tests:
+  - `tests/db/session/test_init_db.py` — Tests for init_db() (creates engine, configures pool, retry logic).
+  - `tests/db/session/test_close_db.py` — Tests for close_db() (disposes engine, idempotent).
+  - `tests/db/session/test_get_db.py` — Tests for get_db() dependency (yields session, closes after use, handles exceptions).
+  - `tests/db/session/test_pool_config.py` — Tests for connection pool parameters (pool_size, max_overflow, pool_pre_ping, pool_recycle).
+  - `tests/db/session/test_retry_logic.py` — Tests for connection retry (exponential backoff, max attempts).
 * `tests/db/migrations/` — Alembic migrations unit tests:
   - `tests/db/migrations/test_alembic_config.py` — Tests for alembic configuration.
   - `tests/db/migrations/test_migration_runner.py` — Tests for upgrade/downgrade operations.
   - `tests/db/migrations/test_scripts.py` — Tests for migration scripts (migrate.sh, rollback.sh, revision.sh).
+* `tests/core/health/` — Health check unit tests:
+  - `tests/core/health/test_db_health.py` — Tests for check_db_health() (returns true when connected, false when disconnected).
 
 ## 6. Инфраструктура и вспомогательные директории
 * `docs/.gitkeep` — Documentation directory.

@@ -4,25 +4,26 @@
 > Держать коротким: 1 экран. Никаких обсуждений — только факты.
 
 ## Status
-done (task-009 completed, task-001-008 completed, Phase 0 done)
+done (task-010 completed, task-001-009 completed, Phase 0 done)
 
 ## Current Phase
 - Phase: 1 - Database Layer (Дни 4-7) - IN PROGRESS
 - Tasks: 5 tasks created (007-011)
-- Completed: task-007 (Docker + PostgreSQL), task-008 (SQLAlchemy Models), task-009 (Alembic Migrations), task-010-011 (pending)
+- Completed: task-007 (Docker + PostgreSQL), task-008 (SQLAlchemy Models), task-009 (Alembic Migrations), task-010 (Connection Management)
+- Pending: task-011 (Repository Layer)
 - Previous: Phase 0 (Infrastructure) - COMPLETED
 
 ## Current Task
-- Path: specs/tasks/task-010-connection-management/task.md
-- Goal: Configure async database connection and session management
-- Status: pending (task created, ready for builder)
+- Path: None (no active task)
+- Last completed: task-010-database-connection-session-management
+- Status: completed, APPROVED by reviewer
 
 ## Scope (what we do now)
 - Phase 1: Database Layer (IN PROGRESS):
   - Docker + PostgreSQL + pgvector (task-007) ✅
   - SQLAlchemy Models (task-008) ✅
   - Alembic Migrations (task-009) ✅
-  - Connection Management (task-010) ⏳
+  - Connection Management (task-010) ✅
   - Repository Layer (task-011) ⏳
 
 - Phase 0: Infrastructure & Foundation (COMPLETED):
@@ -39,8 +40,8 @@ done (task-009 completed, task-001-008 completed, Phase 0 done)
 - Deployment (Phase 9)
 
 ## Next Steps (max 3)
-1) Execute task-010: Connection Management (via builder)
-2) Execute task-011: Repository Layer (via builder)
+1) Execute task-011: Repository Layer (via builder)
+2) Verify Phase 1 completion (all 007-011 tasks done, tests green)
 3) After Phase 1 complete, move to Phase 2 (Basic Telegram Bot)
 
 ## Blockers
@@ -58,7 +59,7 @@ None
 - [x] Docker + PostgreSQL 16 с pgvector запущен и работает
 - [x] Все SQLAlchemy модели созданы (User, Note, Reminder, TodoistTask, Session)
 - [x] Alembic настроен, первая миграция создана и применена
-- [ ] Connection management работает (async engine, pooling)
+- [x] Connection management работает (async engine, pooling)
 - [ ] Repository layer создан со всеми CRUD операциями
 - [ ] Все задачи (007-011) выполнены и протестированы
 - [ ] CI/CD passes на main branch (lint, typecheck, tests all green)
@@ -75,11 +76,12 @@ None
 
 ## Last Updated
 - Date: 2026-01-19
-- By: archivist (task-009 completed, Phase 1 in progress)
+- By: archivist (task-010 completed, Phase 1 in progress)
 
 ## What was done
 - Phase 0 (Infrastructure & Foundation): All 6 tasks completed (001-006)
-- Phase 1 (Database Layer): task-007 completed, task-008 completed, task-009 completed, tasks 010-011 pending
+- Phase 1 (Database Layer): task-007 completed, task-008 completed, task-009 completed, task-010 completed, task-011 pending
 - Task-007-docker-postgresql-pgvector (COMPLETED): Docker Compose with PostgreSQL 16 + pgvector image, init.sql with pgvector + uuid-ossp extensions, health checks using pg_isready, persistent volumes (postgres-data), network isolation (telemetriya-network), cross-platform management scripts (Unix .sh + Windows .bat), 11 unit tests (docker-compose validation + scripts existence), all tests passing (38 total, 11 new for docker), README.md updated with Docker installation and usage instructions, .env.example updated with POSTGRES_* variables, volume mount fix for init.sql (${PWD} + 00-init.sql + :ro), reviewer APPROVED (commits 36e6630, 688bb67)
 - Task-008-sqlalchemy-models-base-classes (COMPLETED): Base declarative class (DeclarativeBase), mixins (TimestampMixin, UUIDMixin, SoftDeleteMixin), models (User, Note, Reminder, TodoistTask, Session) with full type hints, indexes for frequently queried fields, 54 unit tests (100% coverage), mypy no errors, ruff all checks passed, reviewer APPROVED (commit ed75d31)
 - Task-009-alembic-migrations (COMPLETED): Alembic installed and configured (v1.18.1), alembic.ini with DATABASE_URL from config, alembic/env.py with async support and model imports, first migration created (dc9f11620792_initial_schema.py) with CREATE EXTENSION pgvector/uuid-ossp and CREATE TABLE for all models, management scripts (migrate.sh, rollback.sh, revision.sh), 17 unit tests (17 passed, 5 skipped due to Windows encoding issues), README.md updated with migration documentation, README.md fixed (removed non-existent .bat file references), all tests pass, no secrets in code, reviewer APPROVED
+- Task-010-database-connection-session-management (COMPLETED): Async connection pooling (pool_size=10, max_overflow=20, pool_pre_ping=True, pool_recycle=3600), SessionFactory with AsyncSession, FastAPI dependency injection (get_db, get_db_session), graceful shutdown (close_db), connection retry with exponential backoff (1s, 2s, 4s, max 3 attempts), health check for database (check_db_health), FastAPI lifespan events integration (src/api/main.py), 17 unit tests passed (test_init_db, test_close_db, test_get_db, test_pool_config, test_retry_logic, test_db_health), 3 integration tests (skipped on Windows due to psycopg2 encoding), mypy: Success, ruff: All checks passed, all 15 DoD items completed, reviewer APPROVED

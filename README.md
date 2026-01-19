@@ -185,13 +185,97 @@ python -m src.bot.main
 docker-compose -f infra/docker/docker-compose.yml down -v
 ```
 
+### Database Migrations
+
+Telemetriya uses Alembic for database schema migrations.
+
+#### Running Migrations
+
+**Linux/Mac:**
+```bash
+# Run all pending migrations (upgrade to latest version)
+./scripts/migrate.sh
+
+# Rollback last migration (downgrade one step)
+./scripts/rollback.sh
+
+# Create a new migration
+./scripts/revision.sh "Add email field to users"
+```
+
+**Windows:**
+Use Git Bash, WSL, or any bash-compatible terminal to run the `.sh` scripts:
+```bash
+# Run all pending migrations
+./scripts/migrate.sh
+
+# Rollback last migration
+./scripts/rollback.sh
+```
+
+**Alternative** (directly via Python/Alembic):
+```cmd
+REM Run all pending migrations
+alembic upgrade head
+
+REM Rollback last migration
+alembic downgrade -1
+```
+
+#### Migration Status
+
+To check the current migration status:
+```bash
+alembic current
+alembic history
+```
+
+#### Creating New Migrations
+
+When making schema changes:
+1. Modify the SQLAlchemy models in `src/db/models/`
+2. Create a new migration: `./scripts/revision.sh "Description of changes"`
+3. Review the generated migration file in `alembic/versions/`
+4. Test the migration locally
+5. Commit the migration file along with model changes
+
+#### Important Notes
+
+- Migrations are stored in `alembic/versions/` directory
+- The initial migration (`dc9f11620792_initial_schema.py`) creates all tables and extensions
+- Always review generated migrations before committing
+- Migration should be reversible (both `upgrade()` and `downgrade()` must work)
+- The `alembic_version` table tracks which migrations have been applied
+
 ### Troubleshooting
 
-**Порт 5432 уже занят:**
+**Port 5432 already занят:**
 ```bash
 # Измените порт в .env
 POSTGRES_PORT=5433
 ```
+
+**Проблемы с правами доступа (Linux):**
+```bash
+sudo chown -R $USER:$USER /var/lib/docker
+```
+
+**Health check не проходит:**
+```bash
+# Проверьте логи
+docker-compose -f infra/docker/docker-compose.yml logs postgres
+
+# Перезапустите контейнеры
+./scripts/docker-down.sh
+./scripts/docker-up.sh
+```
+
+**Migration connection errors on Windows:**
+On Windows, if you encounter connection errors when running migrations:
+1. Ensure PostgreSQL container is running: `docker-compose ps`
+2. Check `.env` file has correct `DATABASE_URL`
+3. Try running migrations from within Docker: `docker exec -it telemetriya-postgres bash`
+4. Restart the container if needed: `docker-compose restart postgres`
 
 **Проблемы с правами доступа (Linux):**
 ```bash
