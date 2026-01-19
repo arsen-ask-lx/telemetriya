@@ -4,23 +4,23 @@
 > Держать коротким: 1 экран. Никаких обсуждений — только факты.
 
 ## Status
-ready (task-007 completed, task-001-006 completed, Phase 0 done)
+ready (task-008 completed, task-001-007 completed, Phase 0 done)
 
 ## Current Phase
 - Phase: 1 - Database Layer (Дни 4-7) - IN PROGRESS
 - Tasks: 5 tasks created (007-011)
-- Completed: task-007 (Docker + PostgreSQL), task-008-011 (pending)
+- Completed: task-007 (Docker + PostgreSQL), task-008 (SQLAlchemy Models), task-009-011 (pending)
 - Previous: Phase 0 (Infrastructure) - COMPLETED
 
 ## Current Task
-- Path: specs/tasks/task-008-sqlalchemy-models-base-classes/task.md
-- Goal: Create SQLAlchemy models with mixins, Pydantic schemas, indexes
+- Path: specs/tasks/task-009-alembic-migrations/task.md
+- Goal: Configure Alembic for database migrations
 - Status: pending (task created, ready for builder)
 
 ## Scope (what we do now)
 - Phase 1: Database Layer (IN PROGRESS):
   - Docker + PostgreSQL + pgvector (task-007) ✅
-  - SQLAlchemy Models (task-008) ⏳
+  - SQLAlchemy Models (task-008) ✅
   - Alembic Migrations (task-009) ⏳
   - Connection Management (task-010) ⏳
   - Repository Layer (task-011) ⏳
@@ -39,8 +39,8 @@ ready (task-007 completed, task-001-006 completed, Phase 0 done)
 - Deployment (Phase 9)
 
 ## Next Steps (max 3)
-1) Execute task-008: SQLAlchemy Models & Base Classes (via builder)
-2) Continue Phase 1 tasks sequentially: task-009 → 010 → 011 (via builder)
+1) Execute task-009: Alembic Migrations (via builder)
+2) Continue Phase 1 tasks sequentially: task-010 → 011 (via builder)
 3) After Phase 1 complete, move to Phase 2 (Basic Telegram Bot)
 
 ## Blockers
@@ -56,7 +56,7 @@ None
 
 ## Done Criteria for Phase 1
 - [x] Docker + PostgreSQL 16 с pgvector запущен и работает
-- [ ] Все SQLAlchemy модели созданы (User, Note, Reminder, TodoistTask, Session)
+- [x] Все SQLAlchemy модели созданы (User, Note, Reminder, TodoistTask, Session)
 - [ ] Alembic настроен, первая миграция создана и применена
 - [ ] Connection management работает (async engine, pooling)
 - [ ] Repository layer создан со всеми CRUD операциями
@@ -74,10 +74,11 @@ None
 - [x] CI/CD passes на main branch (lint, typecheck, tests all green)
 
 ## Last Updated
-- Date: 2026-01-18
-- By: archivist (task-007 completed, Phase 1 in progress)
+- Date: 2026-01-19
+- By: archivist (task-008 completed, Phase 1 in progress)
 
 ## What was done
 - Phase 0 (Infrastructure & Foundation): All 6 tasks completed (001-006)
-- Phase 1 (Database Layer): task-007 completed, tasks 008-011 created
+- Phase 1 (Database Layer): task-007 completed, task-008 completed, tasks 009-011 pending
 - Task-007-docker-postgresql-pgvector (COMPLETED): Docker Compose with PostgreSQL 16 + pgvector image, init.sql with pgvector + uuid-ossp extensions, health checks using pg_isready, persistent volumes (postgres-data), network isolation (telemetriya-network), cross-platform management scripts (Unix .sh + Windows .bat), 11 unit tests (docker-compose validation + scripts existence), all tests passing (38 total, 11 new for docker), README.md updated with Docker installation and usage instructions, .env.example updated with POSTGRES_* variables, volume mount fix for init.sql (${PWD} + 00-init.sql + :ro), reviewer APPROVED (commits 36e6630, 688bb67)
+- Task-008-sqlalchemy-models-base-classes (COMPLETED): Base declarative class (DeclarativeBase), mixins (TimestampMixin, UUIDMixin, SoftDeleteMixin), models (User, Note, Reminder, TodoistTask, Session) with full type hints, indexes for frequently queried fields, 54 unit tests (100% coverage), mypy no errors, ruff all checks passed, reviewer APPROVED (commit ed75d31)

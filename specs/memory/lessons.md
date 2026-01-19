@@ -1,5 +1,70 @@
 # Lessons Learned (what went wrong/right)
 
+## 2026-01-19 (Task-008: SQLAlchemy Models & Base Classes)
+**What went well:**
+- Base declarative class created successfully using DeclarativeBase (SQLAlchemy 2.0)
+- 3 mixins implemented correctly: TimestampMixin, UUIDMixin, SoftDeleteMixin
+- 5 models created with full type hints: User, Note, Reminder, TodoistTask, Session
+- All enums defined properly: ContentType, NoteSource, SyncStatus
+- Indexes created for frequently queried fields (composite indexes where needed)
+- 54 unit tests created with 100% coverage (90 statements, 0 missed)
+- mypy validation passed (no issues found in 10 source files)
+- ruff linting passed after automatic fixes (sorted imports, removed unused)
+- Foreign key cascades configured correctly (CASCADE for user_id, SET NULL for note_id)
+- JSON workaround documented for vector_embedding (pgvector pending in dev)
+
+**What went wrong:**
+- Initial attempt used `MappedAsDataclass` in Base → SQLAlchemy dataclass error with mixins
+  - Error: "non-default argument 'deleted_at' follows default argument"
+  - Fix: Removed `MappedAsDataclass`, used plain `DeclarativeBase`
+- SQLAlchemy reserved word `metadata` caused error
+  - Error: "Attribute name 'metadata' is reserved when using Declarative API"
+  - Fix: Renamed to `note_metadata` in Python, kept `"metadata"` as column name in DB
+- Some lint issues existed initially (unsorted imports, unused imports: Index, ARRAY, BigInteger)
+  - Fix: Ran `ruff check --fix` to auto-fix all issues
+
+**What was fixed:**
+- Changed Base from `DeclarativeBase, MappedAsDataclass` to `DeclarativeBase` only
+- Renamed `metadata` field to `note_metadata` in Note model (DB column stays "metadata")
+- Fixed all lint issues with `ruff check --fix src/db/`
+
+**What could be improved:**
+- SAWarning in tests when reusing `TestModel` class name for different mixin tests
+  - Could use unique names like `TimestampTestModel`, `UUIDTestModel`
+- Pydantic schemas not created (optional in task scope, not in DoD)
+  - If needed for FastAPI, should be separate task
+- Vector embedding using JSON as temporary workaround
+  - Should migrate to `pgvector.Vector(1536)` when extension is available
+
+**Lessons:**
+1. **SQLAlchemy 2.0 and mixins:**
+   - `MappedAsDataclass` in Base conflicts with mixins containing default vs non-default fields
+   - Use plain `DeclarativeBase` unless dataclass features are explicitly needed
+   - If using mixins, ensure all fields either all have defaults or are all required
+
+2. **SQLAlchemy reserved names:**
+   - `metadata` is a reserved attribute in SQLAlchemy declarative models
+   - Workaround: Rename Python attribute (e.g., `note_metadata`) and specify column name: `mapped_column("metadata", ...)`
+
+3. **pgvector workaround:**
+   - If pgvector extension not installed in dev environment, use JSON for vector embeddings
+   - Document as temporary workaround, create follow-up task for migration to `pgvector.Vector`
+
+4. **Composite indexes in SQLAlchemy:**
+   - Use `__table_args__ = (Index("idx_name", "col1", "col2"),)` for multi-column indexes
+   - Single-column indexes can use `mapped_column(..., index=True)`
+
+5. **Foreign key cascades:**
+   - CASCADE for user_id: delete user → delete related records
+   - SET NULL for optional note_id: delete note → set note_id to NULL
+   - Document cascade decisions in model docstrings
+
+6. **Test warnings for class reuse:**
+   - SAWarning occurs when same class name is used multiple times in test files
+   - Acceptable for unit tests but can be confusing in logs
+
+---
+
 ## 2026-01-18 (Task-006: GitHub Actions CI/CD)
 **What went well:**
 - GitHub Actions CI/CD workflow created successfully (.github/workflows/ci.yml)

@@ -38,6 +38,8 @@
 * `specs/tasks/task-004-config-management/task.md` — Task-004 (COMPLETED): Configuration Management.
 * `specs/tasks/task-005-logging-setup/task.md` — Task-005 (COMPLETED): Logging Setup.
 * `specs/tasks/task-006-github-actions-cicd/task.md` — Task-006 (COMPLETED): GitHub Actions CI/CD.
+* `specs/tasks/task-007-docker-postgresql-pgvector/task.md` — Task-007 (COMPLETED): Docker + PostgreSQL 16 with pgvector.
+* `specs/tasks/task-008-sqlalchemy-models-base-classes/task.md` — Task-008 (COMPLETED): SQLAlchemy Models & Base Classes.
 
 ## 3. Инструментарий агента (.opencode/)
 * `.opencode/agents/breaker.md` — Промпт для роли Планировщика.
@@ -53,7 +55,14 @@
 
 **Database (src/db/)**
 * `src/db/__init__.py` — Database package.
+* `src/db/base.py` — Base declarative class (DeclarativeBase).
+* `src/db/mixins.py` — Mixin classes (TimestampMixin, UUIDMixin, SoftDeleteMixin).
 * `src/db/models/__init__.py` — SQLAlchemy models (User, Note, Reminder, etc.).
+* `src/db/models/user.py` — User model (telegram users).
+* `src/db/models/note.py` — Note model (user notes with ContentType, NoteSource enums).
+* `src/db/models/reminder.py` — Reminder model (user reminders).
+* `src/db/models/todoist_task.py` — TodoistTask model (Todoist sync with SyncStatus enum).
+* `src/db/models/session.py` — Session model (conversation sessions).
 * `src/db/repositories/__init__.py` — Repository layer (CRUD operations).
 
 **Bot (src/bot/)**
@@ -92,6 +101,14 @@
 * `tests/unit/__init__.py` — Unit tests (business logic, models, schemas).
 * `tests/integration/__init__.py` — Integration tests (API handlers, DB).
 * `tests/e2e/__init__.py` — End-to-end tests (full user journeys).
+* `tests/db/models/` — Database models unit tests:
+  - `tests/db/models/test_base.py` — Base declarative class tests.
+  - `tests/db/models/test_mixins.py` — Mixin classes tests (TimestampMixin, UUIDMixin, SoftDeleteMixin).
+  - `tests/db/models/test_user.py` — User model tests.
+  - `tests/db/models/test_note.py` — Note model tests (ContentType, NoteSource enums).
+  - `tests/db/models/test_reminder.py` — Reminder model tests.
+  - `tests/db/models/test_todoist_task.py` — TodoistTask model tests (SyncStatus enum).
+  - `tests/db/models/test_session.py` — Session model tests.
 
 ## 6. Инфраструктура и вспомогательные директории
 * `docs/.gitkeep` — Documentation directory.
