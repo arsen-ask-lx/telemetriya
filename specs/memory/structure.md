@@ -72,7 +72,20 @@
 * `src/db/models/reminder.py` — Reminder model (user reminders).
 * `src/db/models/todoist_task.py` — TodoistTask model (Todoist sync with SyncStatus enum).
 * `src/db/models/session.py` — Session model (conversation sessions).
-* `src/db/repositories/__init__.py` — Repository layer (CRUD operations).
+* `src/db/repositories/__init__.py` — Repository layer (abstraction between services and database).
+* `src/db/repositories/base.py` — Generic BaseRepository[T] with CRUD operations (create, get, get_or_404, update, delete, list, count), pagination (offset, limit), dynamic filtering, sorting, soft delete support.
+* `src/db/repositories/user.py` — UserRepository (get_by_telegram_id, get_or_create_by_telegram_id, list_active_users).
+* `src/db/repositories/note.py` — NoteRepository (list_by_user, search_by_content, list_by_content_type).
+* `src/db/repositories/reminder.py` — ReminderRepository (list_by_user, list_pending, list_unsent).
+* `src/db/repositories/todoist_task.py` — TodoistTaskRepository (get_by_todoist_id, list_by_sync_status, list_by_user).
+
+**Repository Pattern (Design Note):**
+- Abstraction layer between business logic (services) and database (SQLAlchemy)
+- Generic BaseRepository[T] provides common CRUD operations for all models
+- Specific repositories extend BaseRepository for business-specific queries
+- Services use repositories for all database access (no direct SQLAlchemy queries in services)
+- Type-safe with Generic[T] and TypeVar declarations
+- Transaction management (commit/rollback) handled in repository layer
 
 **Bot (src/bot/)**
 * `src/bot/__init__.py` — Telegram bot package.
@@ -133,6 +146,13 @@
   - `tests/db/migrations/test_scripts.py` — Tests for migration scripts (migrate.sh, rollback.sh, revision.sh).
 * `tests/core/health/` — Health check unit tests:
   - `tests/core/health/test_db_health.py` — Tests for check_db_health() (returns true when connected, false when disconnected).
+* `tests/db/repositories/` — Repository layer unit tests:
+  - `tests/db/repositories/conftest.py` — Test fixtures for repositories (async_session, test models).
+  - `tests/db/repositories/test_base_repository.py` — BaseRepository tests (28 tests: CRUD, pagination, filtering, sorting, soft delete).
+  - `tests/db/repositories/test_user_repository.py` — UserRepository tests (16 tests: get_by_telegram_id, get_or_create, list_active, race condition).
+  - `tests/db/repositories/test_note_repository.py` — NoteRepository tests (10 tests: list_by_user, search_by_content, list_by_content_type).
+  - `tests/db/repositories/test_reminder_repository.py` — ReminderRepository tests (24 tests: list_by_user, list_pending, list_unsent).
+  - `tests/db/repositories/test_todoist_task_repository.py` — TodoistTaskRepository tests (15 tests: get_by_todoist_id, list_by_sync_status, list_by_user).
 
 ## 6. Инфраструктура и вспомогательные директории
 * `docs/.gitkeep` — Documentation directory.

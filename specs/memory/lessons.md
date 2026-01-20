@@ -1,5 +1,97 @@
 # Lessons Learned (what went wrong/right)
 
+## 2026-01-20 (Task-011: Repository Layer)
+**What went well:**
+- Generic BaseRepository[T] implemented successfully with full CRUD operations (create, get, get_or_404, update, delete, list, count)
+- Pagination support implemented with validation (offset >= 0, limit > 0, limit <= 1000)
+- Dynamic filtering using SQLAlchemy expressions working correctly
+- Sorting with order_by validation (only allow columns from model)
+- Soft delete support for models with deleted_at field (check before hard delete)
+- 4 specific repositories created (UserRepository, NoteRepository, ReminderRepository, TodoistTaskRepository) with 3 methods each
+- Type-safe with Generic[T] and TypeVar declarations
+- Comprehensive error handling (SQLAlchemyError, DatabaseError, ValueError, RuntimeError)
+- Transaction management (commit on success, rollback on error)
+- 117 tests passing (94% coverage, exceeds 90% DoD requirement)
+- mypy: Success (no type errors)
+- All error handling, edge cases, pagination fully tested
+- Reviewer APPROVED after all fixes applied
+
+**What went wrong:**
+- 4 syntax errors with type: ignore placement (incorrect indentation/formatting)
+  - Error: type: ignore comments not properly formatted in user.py, note.py, reminder.py, todoist_task.py
+  - Fix: Corrected type: ignore placement after type annotation on same line
+- datetime.utcnow() deprecation warning in Python 3.12
+  - Error: datetime.utcnow() is deprecated in Python 3.12+
+  - Fix: Changed datetime.utcnow() to datetime.now(timezone.utc) in multiple files
+- Race condition in get_or_create_by_telegram_id
+  - Error: Two concurrent requests could both insert duplicate user (IntegrityError)
+  - Fix: Wrap in try/except IntegrityError, rollback session, retry get() to return existing user
+- Missing max limit validation in pagination
+  - Error: limit could be arbitrarily large, causing performance issues
+  - Fix: Added max limit validation (limit <= 1000) in BaseRepository.list()
+- Initial coverage was 71%, below 90% DoD requirement
+  - Fix: Added 46 tests focusing on error paths and edge cases to reach 94% coverage
+
+**What was fixed:**
+- Fixed all 4 type: ignore syntax errors (user.py, note.py, reminder.py, todoist_task.py)
+- Replaced datetime.utcnow() with datetime.now(timezone.utc) in all repository files
+- Added race condition handling in get_or_create_by_telegram_id (IntegrityError → rollback → retry)
+- Added max limit validation (limit <= 1000) in BaseRepository.list()
+- Added 46 tests focusing on error handling paths, boundary values, and edge cases
+- Coverage increased from 71% to 94% (exceeds 90% DoD requirement)
+
+**What could be improved:**
+- Fix datetime.utcnow() deprecation in src/db/mixins.py (from task-008, outside task-011 scope)
+- Consider PostgreSQL integration tests for NoteRepository to avoid xfail due to PG_ARRAY
+- Add more complex query scenarios (joins, subqueries) to evals if needed by services
+- Consider adding query result caching decorator for frequently accessed data
+
+**Lessons:**
+1. **Test coverage strategies:**
+   - Focus on error paths and edge cases to reach high coverage
+   - Test boundary values (offset=0, offset=-1, limit=1, limit=1000, limit=1001)
+   - Test error handling (IntegrityError, ValueError, DatabaseError)
+   - Test soft delete logic (deleted_before, deleted_after filters)
+   - Test pagination logic (total_count calculation, page slicing)
+
+2. **Soft delete pattern:**
+   - Use generic approach with SoftDeleteMixin for consistency
+   - Check for deleted_at field before hard delete (if exists, set deleted_at = datetime.now(timezone.utc))
+   - Support filtering by deleted status (deleted_before, deleted_after)
+   - Test soft delete + hard delete logic thoroughly
+
+3. **Error handling pattern:**
+   - Always wrap DB operations in try/except with rollback on error
+   - Raise meaningful exceptions (ValueError for validation errors, RuntimeError for unexpected errors)
+   - Log errors with debug level before re-raising
+   - Use specific SQLAlchemy errors (IntegrityError, DatabaseError)
+   - Test all error paths (constraint violations, invalid input, connection errors)
+
+4. **Race condition in get_or_create:**
+   - Use IntegrityError handling with retry logic
+   - Rollback session on IntegrityError before retrying
+   - Retry get() to return existing user after rollback
+   - Test race condition scenario (concurrent inserts)
+
+5. **Generic[T] typing:**
+   - Use TypeVar with bound for type-safe repositories (T bound to DeclarativeBase)
+   - Accept Generic[T] limitations in mypy (can't know concrete model attributes)
+   - Use type: ignore for mypy issues where necessary (but minimize)
+   - Test generic base with multiple concrete implementations
+
+6. **Pagination validation:**
+   - Validate both lower bounds (offset >= 0, limit > 0) and upper bounds (limit <= 1000)
+   - Upper bound prevents performance issues with large result sets
+   - Test pagination edge cases (empty result, single page, multiple pages, last page)
+
+7. **datetime.utcnow() deprecation:**
+   - Python 3.12+ deprecates datetime.utcnow()
+   - Use datetime.now(timezone.utc) for timezone-aware datetime
+   - This applies to all datetime operations, not just repositories
+   - Fix should be applied across codebase (mixins.py still has utcnow())
+
+---
+
 ## 2026-01-19 (Task-010: Database Connection & Session Management)
 **What went well:**
 - Async connection pooling configured correctly (pool_size=10, max_overflow=20, pool_pre_ping=True, pool_recycle=3600)
